@@ -1,0 +1,49 @@
+name: "Hunk Channel"
+
+sceneByURL:
+  - action: scrapeXPath
+    url:
+      - hunk-ch.com/movie_detail.php
+    scraper: sceneScraper
+
+xPathScrapers:
+  sceneScraper:
+    scene:
+      Title: 
+        selector: //h2
+        postProcess:
+          - replace:
+            - regex: "^【[^】]+】\\s*"
+              with: ""
+      Code:
+        selector: //link[@rel="canonical"]/@href
+        postProcess:
+          - replace:
+            - regex: "^[^?]*\\?code=([^&]+).*"
+              with: "$1"
+      URLs: //link[@rel="canonical"]/@href
+      Date:
+        selector: //div[@class="data"]
+        postProcess:
+          - replace:
+              - regex: ".*発売日：.*?([0-9]{4}-[0-9]{2}-[0-9]{2}).*"
+                with: "$1"
+      Studio:
+        Name: //div[@class="data"]//a[contains(@href,'search.php?b=')]
+      Tags:
+        Name: //div[@class="data"]//a[contains(@href,'search.php?c=')]
+      Details: 
+        selector: //div[contains(@class, "detail_title")]/following-sibling::p/text()
+        postProcess:
+          - replace:
+            - regex: ^\s+
+              with: ""
+            - regex: \s+$
+              with: ""
+        concat: "\n\n"
+      Image: 
+        selector: //ul[@class="slides"]//img[contains(@src, "_top")]/@src
+        postProcess:
+          - replace:
+              - regex: "^\\./"
+                with: "https://www.hunk-ch.com/"
