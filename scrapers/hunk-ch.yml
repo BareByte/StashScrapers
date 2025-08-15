@@ -42,7 +42,7 @@ xPathScrapers:
               with: ""
         concat: "\n\n"
       Image: 
-        selector: //ul[@class="slides"]//img[contains(@src, "_top")]/@src
+        selector: //ul[@class="slides"]/li/img/@src
         postProcess:
           - replace:
               - regex: "^\\./"
